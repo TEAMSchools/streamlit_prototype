@@ -1,8 +1,12 @@
 """
-style.py — Design tokens and helpers
+style.py — Design tokens and HTML builders
 
-All color, typography, and component styling lives here.
-Source: style_example/bigboard.html
+Light theme matching the AP Hub Google Sheets mockup:
+- White page background
+- Navy (#001E62) section banner bars
+- Sky blue (#56C0E9) sidebar accents and expand links
+- #DAEeF6 alternating row tint
+- Light gray sidebar (#F4F6FB)
 """
 
 import streamlit as st
@@ -11,37 +15,41 @@ import streamlit as st
 # Color tokens
 # ---------------------------------------------------------------------------
 COLORS = {
-    "indigo":   "#001E62",  # primary brand / text
-    "indigo_2": "#002d8a",  # heatmap rank 1
-    "orange":   "#F9A21A",  # active tab / accent
-    "blue":     "#57C0E9",  # hover / highlight
-    "g1":       "#F8F9FB",  # page background
-    "g2":       "#EDEEF2",  # card borders
-    "g3":       "#D0D3DC",  # subtle dividers
-    "g4":       "#8A8FA2",  # secondary text / labels
-    "g5":       "#3D4259",  # primary body text
-    "green":    "#1A9E5B",  # positive delta
-    "red":      "#D63B3B",  # negative delta / alert
+    "navy":    "#001E62",  # primary brand / section banners
+    "navy_2":  "#002d8a",  # heatmap rank 1
+    "sky":     "#56C0E9",  # sidebar pills, expand links, hover
+    "orange":  "#F9A21A",  # accent / mock data badge
+    "white":   "#FFFFFF",
+    "g0":      "#F4F6FB",  # sidebar background
+    "g1":      "#F8F9FB",  # subtle off-white
+    "g2":      "#EDEEF2",  # card borders / dividers
+    "g4":      "#8A8FA2",  # secondary text / sub-labels
+    "g5":      "#3D4259",  # primary body text
+    "row_alt": "#DAEeF6",  # alternating row tint (from mockup)
+    "green":   "#1A9E5B",
+    "red":     "#D63B3B",
 }
 
+
 # ---------------------------------------------------------------------------
-# Heatmap coloring
+# Heatmap coloring (rank-based, light-theme aware)
 # ---------------------------------------------------------------------------
 
 def heatmap_color(rank: int, n: int) -> str:
     """
-    rank=1 (best)  → indigo full (#002d8a)
-    rank=2         → lighter indigo (#3358b8)
-    rank 3..N      → greyscale, rank=N (worst) → #8A8FA2
+    rank=1 (best) → navy (#002d8a)
+    rank=2        → medium blue (#3358b8)
+    rank 3..N     → white → light row tint gradient
     """
     if rank == 1:
         return "#002d8a"
     if rank == 2:
         return "#3358b8"
+    # Grades 3..N fade from the alternating tint to white
     t = (rank - 3) / max(n - 3, 1)
-    r = int(0xD0 + t * (0x8A - 0xD0))
-    g = int(0xD3 + t * (0x8F - 0xD3))
-    b = int(0xDC + t * (0xA2 - 0xDC))
+    r = int(0xDA + t * (0xFF - 0xDA))
+    g = int(0xEE + t * (0xFF - 0xEE))
+    b = int(0xF6 + t * (0xFF - 0xF6))
     return f"#{r:02X}{g:02X}{b:02X}"
 
 
@@ -50,7 +58,7 @@ def text_color(rank: int) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Global CSS injection
+# Global CSS
 # ---------------------------------------------------------------------------
 
 def inject_global_css() -> None:
@@ -58,13 +66,19 @@ def inject_global_css() -> None:
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');
 
+    /* ── Base ─────────────────────────────────────────────────── */
     html, body, [class*="css"] {
         font-family: 'DM Sans', sans-serif;
         color: #3D4259;
-        background-color: #F8F9FB;
+        background-color: #FFFFFF;
     }
 
-    /* Page header */
+    .main .block-container {
+        background: #FFFFFF;
+        padding-top: 1.25rem;
+        padding-bottom: 3rem;
+    }
+
     h1, h2, h3 {
         font-family: 'Barlow Condensed', sans-serif;
         font-weight: 700;
@@ -72,23 +86,47 @@ def inject_global_css() -> None:
         letter-spacing: 0.01em;
     }
 
-    /* Metric labels and mono values */
-    .mono {
-        font-family: 'JetBrains Mono', monospace;
-        font-weight: 500;
+    /* ── Sidebar — light ──────────────────────────────────────── */
+    section[data-testid="stSidebar"] {
+        background: #F4F6FB;
+        border-right: 1.5px solid #EDEEF2;
+    }
+    section[data-testid="stSidebar"] .stSelectbox label {
+        color: #001E62 !important;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
     }
 
-    /* Cards */
-    .card {
-        background: #fff;
-        border: 1.5px solid #EDEEF2;
-        border-radius: 10px;
-        box-shadow: 0 1px 3px rgba(0,30,98,.06);
-        padding: 16px 20px;
-        margin-bottom: 12px;
+    /* ── Domain section banners ───────────────────────────────── */
+    .domain-banner {
+        background: #001E62;
+        color: #ffffff;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 9px 14px;
+        margin-bottom: 10px;
+        border-radius: 4px;
     }
 
-    /* Heatmap table */
+    /* ── Subheader labels ─────────────────────────────────────── */
+    .sub-label {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: #8A8FA2;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        margin-top: 14px;
+    }
+
+    /* ── Heatmap table ────────────────────────────────────────── */
     table.heatmap {
         width: 100%;
         border-collapse: collapse;
@@ -97,34 +135,38 @@ def inject_global_css() -> None:
     }
     table.heatmap th {
         background: #001E62;
-        color: #fff;
+        color: #ffffff;
         font-family: 'Barlow Condensed', sans-serif;
         font-weight: 600;
         font-size: 12px;
         letter-spacing: 0.05em;
         text-transform: uppercase;
-        padding: 8px 10px;
+        padding: 7px 10px;
         text-align: left;
     }
     table.heatmap td {
-        padding: 7px 10px;
+        padding: 6px 10px;
         border-bottom: 1px solid #EDEEF2;
+        background: #FFFFFF;
+    }
+    table.heatmap tr:nth-child(even) td {
+        background: #F4F6FB;
     }
     table.heatmap tr:last-child td {
         border-bottom: none;
     }
     table.heatmap tr:hover td {
-        background: #F0F6FF;
+        background: #DAEeF6 !important;
     }
 
-    /* Hotlist student table */
+    /* ── Hotlist (student) table ──────────────────────────────── */
     table.hotlist {
         width: 100%;
         border-collapse: collapse;
         font-size: 12px;
     }
     table.hotlist th {
-        background: #F8F9FB;
+        background: #F4F6FB;
         color: #8A8FA2;
         font-family: 'JetBrains Mono', monospace;
         font-size: 11px;
@@ -137,28 +179,40 @@ def inject_global_css() -> None:
     }
     table.hotlist td {
         padding: 6px 8px;
-        border-bottom: 1px solid #F0F0F5;
+        border-bottom: 1px solid #EDEEF2;
         font-family: 'DM Sans', sans-serif;
+        background: #FFFFFF;
+    }
+    table.hotlist tr:nth-child(even) td {
+        background: #DAEeF6;
     }
     table.hotlist td.mono {
         font-family: 'JetBrains Mono', monospace;
         font-size: 12px;
     }
 
-    /* Section label pill */
-    .section-pill {
-        display: inline-block;
-        background: #EEF2FF;
-        color: #001E62;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
-        font-weight: 500;
-        border-radius: 4px;
-        padding: 2px 7px;
-        margin-right: 4px;
+    /* ── Expander — styled as blue expand links ───────────────── */
+    [data-testid="stExpander"] {
+        border: none !important;
+        border-top: 1px solid #EDEEF2 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    [data-testid="stExpander"] summary {
+        color: #56C0E9 !important;
+        font-style: italic;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        padding: 6px 2px;
+    }
+    [data-testid="stExpander"] summary:hover {
+        color: #002d8a !important;
+    }
+    [data-testid="stExpander"] summary svg {
+        fill: #56C0E9 !important;
     }
 
-    /* Metric value — large display */
+    /* ── Metric value display ─────────────────────────────────── */
     .metric-value {
         font-family: 'Barlow Condensed', sans-serif;
         font-weight: 700;
@@ -175,7 +229,7 @@ def inject_global_css() -> None:
         letter-spacing: 0.07em;
     }
 
-    /* Alert badge */
+    /* ── Alert badges ─────────────────────────────────────────── */
     .badge-alert {
         display: inline-block;
         background: #FFF0F0;
@@ -184,7 +238,7 @@ def inject_global_css() -> None:
         font-size: 11px;
         font-weight: 500;
         border-radius: 4px;
-        padding: 2px 7px;
+        padding: 3px 8px;
     }
     .badge-ok {
         display: inline-block;
@@ -194,68 +248,85 @@ def inject_global_css() -> None:
         font-size: 11px;
         font-weight: 500;
         border-radius: 4px;
-        padding: 2px 7px;
+        padding: 3px 8px;
     }
 
-    /* Streamlit sidebar */
-    section[data-testid="stSidebar"] {
-        background: #001E62;
+    /* ── Sidebar jump-to link pills ───────────────────────────── */
+    .jump-link {
+        display: block;
+        color: #001E62;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-bottom: 2px;
+        transition: background 0.15s;
     }
-    section[data-testid="stSidebar"] * {
-        color: #fff !important;
-    }
-    section[data-testid="stSidebar"] .stSelectbox label {
-        color: #8A9FCC !important;
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 12px;
-        letter-spacing: 0.07em;
-        text-transform: uppercase;
+    .jump-link:hover {
+        background: #DAEeF6;
+        color: #001E62;
+        text-decoration: none;
     }
 
-    /* Hide Streamlit chrome */
+    /* ── Hide Streamlit chrome ────────────────────────────────── */
     #MainMenu { visibility: hidden; }
-    footer { visibility: hidden; }
-    header { visibility: hidden; }
+    footer     { visibility: hidden; }
+    header     { visibility: hidden; }
     </style>
     """, unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
-# Reusable HTML builders
+# HTML builders
 # ---------------------------------------------------------------------------
 
-def stat_card(label: str, value: str, sublabel: str = "") -> str:
-    """Returns an HTML card for a single KPI."""
-    sub = f'<div class="metric-label" style="margin-top:4px;color:#8A8FA2">{sublabel}</div>' if sublabel else ""
-    return f"""
-    <div class="card" style="text-align:center;">
-        <div class="metric-label">{label}</div>
-        <div class="metric-value">{value}</div>
-        {sub}
-    </div>
+def domain_banner(title: str, anchor_id: str) -> str:
+    """Full-width navy section header with anchor target."""
+    return (
+        f'<div id="{anchor_id}"></div>'
+        f'<div class="domain-banner">{title}</div>'
+    )
+
+
+def sub_label(text: str) -> str:
+    return f'<div class="sub-label">{text}</div>'
+
+
+def jump_to_sidebar(sections: list[tuple[str, str]]) -> str:
     """
-
-
-def section_header(title: str, subtitle: str = "") -> str:
-    sub = f'<span style="font-family:DM Sans;font-size:13px;font-weight:400;color:#8A8FA2;margin-left:10px;">{subtitle}</span>' if subtitle else ""
-    return f'<h3 style="margin-bottom:4px;">{title}{sub}</h3>'
+    Render a Jump To nav block for the sidebar.
+    sections: list of (label, anchor_id)
+    """
+    links = "".join(
+        f'<a class="jump-link" href="#{anchor}">{label}</a>'
+        for label, anchor in sections
+    )
+    return (
+        '<div style="margin-bottom:6px;font-family:Barlow Condensed,sans-serif;'
+        'font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;'
+        'color:#56C0E9;background:#001E62;padding:4px 10px;border-radius:4px;">'
+        'Jump To</div>'
+        + links
+    )
 
 
 def heatmap_table(rows: list[dict], cols: list[dict], rank_col: str = None, n: int = None) -> str:
     """
     Generic heatmap HTML table.
-
     cols: list of {"key": str, "label": str, "align": "left"|"right", "mono": bool}
-    rank_col: if set, the column key whose integer value drives background color
-    n: total number of rows (for rank color scale)
+    rank_col: key whose int value drives background color
+    n: total row count for rank color scale
     """
     header_cells = "".join(
         f'<th style="text-align:{c.get("align","left")}">{c["label"]}</th>'
         for c in cols
     )
     body_rows = []
-    for row in rows:
+    for i, row in enumerate(rows):
         rank = int(row.get(rank_col, 999)) if rank_col else None
+        row_bg = COLORS["row_alt"] if i % 2 == 1 else COLORS["white"]
         cells = []
         for c in cols:
             val = row.get(c["key"], "")
@@ -265,22 +336,25 @@ def heatmap_table(rows: list[dict], cols: list[dict], rank_col: str = None, n: i
                 bg = heatmap_color(rank, n)
                 fg = text_color(rank)
                 cells.append(
-                    f'<td{mono_cls} style="text-align:{align};background:{bg};color:{fg};font-weight:600">{val}</td>'
+                    f'<td{mono_cls} style="text-align:{align};background:{bg};'
+                    f'color:{fg};font-weight:600">{val}</td>'
                 )
             else:
-                cells.append(f'<td{mono_cls} style="text-align:{align}">{val}</td>')
+                cells.append(
+                    f'<td{mono_cls} style="text-align:{align};background:{row_bg}">{val}</td>'
+                )
         body_rows.append(f'<tr>{"".join(cells)}</tr>')
 
-    return f"""
-    <table class="heatmap">
-        <thead><tr>{header_cells}</tr></thead>
-        <tbody>{"".join(body_rows)}</tbody>
-    </table>
-    """
+    return (
+        '<table class="heatmap">'
+        f'<thead><tr>{header_cells}</tr></thead>'
+        f'<tbody>{"".join(body_rows)}</tbody>'
+        '</table>'
+    )
 
 
 def hotlist_table(rows: list[dict], cols: list[dict]) -> str:
-    """Generic hotlist (student-level) HTML table."""
+    """Generic student-level hotlist table."""
     header_cells = "".join(
         f'<th style="text-align:{c.get("align","left")}">{c["label"]}</th>'
         for c in cols
@@ -295,9 +369,9 @@ def hotlist_table(rows: list[dict], cols: list[dict]) -> str:
             cells.append(f'<td{mono_cls} style="text-align:{align}">{val}</td>')
         body_rows.append(f'<tr>{"".join(cells)}</tr>')
 
-    return f"""
-    <table class="hotlist">
-        <thead><tr>{header_cells}</tr></thead>
-        <tbody>{"".join(body_rows)}</tbody>
-    </table>
-    """
+    return (
+        '<table class="hotlist">'
+        f'<thead><tr>{header_cells}</tr></thead>'
+        f'<tbody>{"".join(body_rows)}</tbody>'
+        '</table>'
+    )
