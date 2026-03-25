@@ -71,7 +71,7 @@ def get_metrics(
     """
     con = _con()
     return con.execute("""
-        SELECT *
+        SELECT * REPLACE (CAST(grade AS INTEGER) AS grade)
         FROM read_csv_auto(?)
         WHERE grain_type    = ?
           AND ap_manager_id = ?
@@ -100,7 +100,7 @@ def get_student_ada_hotlist(
     """
     con = _con()
     return con.execute("""
-        SELECT *
+        SELECT * REPLACE (CAST(Grade_Level AS INTEGER) AS Grade_Level)
         FROM read_csv_auto(?)
         WHERE ap_manager_id = ?
           AND value IS NOT NULL
@@ -121,7 +121,7 @@ def get_student_referrals_hotlist(
     """
     con = _con()
     return con.execute("""
-        SELECT *
+        SELECT * REPLACE (CAST(grade AS INTEGER) AS grade)
         FROM read_csv_auto(?)
         WHERE ap_manager_id = ?
           AND (? IS NULL OR section = ?)
