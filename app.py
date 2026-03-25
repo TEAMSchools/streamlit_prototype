@@ -44,8 +44,14 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
     st.markdown(
-        '<div style="font-size:10px;color:#8A9FCC;letter-spacing:0.07em;'
-        'text-transform:uppercase;">Data refreshed nightly</div>',
+        '<div style="background:#F9A21A;color:#001E62;font-family:JetBrains Mono,monospace;'
+        'font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;'
+        'border-radius:5px;padding:5px 10px;text-align:center;">⚡ Mock Data — Prototype</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div style="font-size:10px;color:#8A9FCC;letter-spacing:0.05em;margin-top:8px;">'
+        'DuckDB · mock_data/*.csv<br/>Prod: swap data_client.py → Cube API</div>',
         unsafe_allow_html=True,
     )
 

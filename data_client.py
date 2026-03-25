@@ -81,6 +81,7 @@ def get_student_ada_hotlist(
         SELECT *
         FROM read_csv_auto(?)
         WHERE ap_manager_id = ?
+          AND value IS NOT NULL
           AND (? IS NULL OR Section = ?)
         ORDER BY value ASC, Grade_Level, Student_Number
     """, [_ADA_HOTLIST, ap_manager_id, section, section]).df().to_dict(orient="records")
