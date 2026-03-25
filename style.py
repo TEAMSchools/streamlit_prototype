@@ -37,24 +37,19 @@ COLORS = {
 
 def heatmap_color(rank: int, n: int) -> str:
     """
-    rank=1 (best) → navy (#002d8a)
-    rank=2        → medium blue (#3358b8)
-    rank 3..N     → white → light row tint gradient
+    Linear interpolation from #B3C4ED (rank 1, best) → #EAEAEA (rank N, worst).
+    All fills are light enough that dark text is always readable.
     """
-    if rank == 1:
-        return "#002d8a"
-    if rank == 2:
-        return "#3358b8"
-    # Grades 3..N fade from the alternating tint to white
-    t = (rank - 3) / max(n - 3, 1)
-    r = int(0xDA + t * (0xFF - 0xDA))
-    g = int(0xEE + t * (0xFF - 0xEE))
-    b = int(0xF6 + t * (0xFF - 0xF6))
+    t = (rank - 1) / max(n - 1, 1)
+    r = int(0xB3 + t * (0xEA - 0xB3))
+    g = int(0xC4 + t * (0xEA - 0xC4))
+    b = int(0xED + t * (0xEA - 0xED))
     return f"#{r:02X}{g:02X}{b:02X}"
 
 
 def text_color(rank: int) -> str:
-    return "#FFFFFF" if rank <= 2 else "#3D4259"
+    # All fills are light — always use dark text
+    return "#3D4259"
 
 
 # ---------------------------------------------------------------------------
@@ -65,6 +60,19 @@ def inject_global_css() -> None:
     st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');
+
+    /* ── Force light theme — override system dark mode ────────── */
+    :root {
+        color-scheme: light only !important;
+    }
+    @media (prefers-color-scheme: dark) {
+        html, body, [data-testid="stAppViewContainer"],
+        [data-testid="stHeader"], [data-testid="stSidebar"],
+        .main, [class*="css"] {
+            background-color: #FFFFFF !important;
+            color: #3D4259 !important;
+        }
+    }
 
     /* ── Base ─────────────────────────────────────────────────── */
     html, body, [class*="css"] {
@@ -156,7 +164,7 @@ def inject_global_css() -> None:
         border-bottom: none;
     }
     table.heatmap tr:hover td {
-        background: #DAEeF6 !important;
+        font-weight: 700 !important;
     }
 
     /* ── Hotlist (student) table ──────────────────────────────── */

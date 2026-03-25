@@ -15,7 +15,7 @@ import style
 # Page config
 # ---------------------------------------------------------------------------
 st.set_page_config(
-    page_title="AP Hub — Justice",
+    page_title="AP Hub",
     page_icon="🏫",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -39,8 +39,8 @@ SECTIONS = [
 with st.sidebar:
     # Title block
     st.markdown(
-        '<div style="font-family:Barlow Condensed,sans-serif;font-size:26px;'
-        'font-weight:700;color:#001E62;letter-spacing:0.03em;padding:12px 0 2px 0;">'
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:52px;'
+        'font-weight:700;color:#001E62;letter-spacing:0.03em;padding:12px 0 2px 0;line-height:1;">'
         'AP Hub</div>'
         '<div style="font-size:11px;color:#8A8FA2;padding-bottom:4px;line-height:1.4;">'
         'Mock up · O3 With Myself data prep protocol</div>',
@@ -89,9 +89,6 @@ with st.sidebar:
 # Page header
 # ---------------------------------------------------------------------------
 st.markdown(
-    f'<div style="font-family:Barlow Condensed,sans-serif;font-size:28px;'
-    f'font-weight:700;color:#001E62;letter-spacing:0.02em;margin-bottom:2px;">'
-    f'Justice School · 2024–25</div>'
     f'<div style="font-size:13px;color:#8A8FA2;margin-bottom:20px;">'
     f'Viewing as <strong style="color:#001E62">{selected_ap_name}</strong></div>',
     unsafe_allow_html=True,
