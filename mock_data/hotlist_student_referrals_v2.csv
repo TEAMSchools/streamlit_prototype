@@ -1,0 +1,12 @@
+grain_type,grain_key,grade,section,teacher_name,teacher_number,course_name,student_count,metric_domain,metric_name,metric_category,value,ap_manager_name,ap_manager_id
+student,STU_CDF398F1,5,5NJCU,,,HR,1,Behavior,Repeat Incidents,Disruption,2,Awesome AP 1,AP_12EEC59A
+student,STU_A174E818,5,5NJCU,,,HR,1,Behavior,Repeat Incidents,Phone,3,Awesome AP 1,AP_12EEC59A
+student,STU_AD142462,6,6Howard,,,HR,1,Behavior,Repeat Incidents,Conflict,2,Awesome AP 1,AP_12EEC59A
+student,STU_A1287779,6,6Spelhouse,,,HR,1,Behavior,Repeat Incidents,Defiance,4,Awesome AP 1,AP_12EEC59A
+student,STU_5016F1EE,6,6Lincoln,,,HR,1,Behavior,Repeat Incidents,Phone,2,Awesome AP 1,AP_12EEC59A
+student,STU_76035817,6,6MSU,,,HR,1,Behavior,Repeat Incidents,Disruption,2,Awesome AP 1,AP_12EEC59A
+student,STU_71BEC888,7,7Upenn,,,HR,1,Behavior,Repeat Incidents,Defiance,2,Awesome AP 2,AP_987F9BF3
+student,STU_B5BBE24D,8,8Michigan,,,HR,1,Behavior,Repeat Incidents,Disruption,2,Awesome AP 3,AP_98D7BF59
+student,STU_BE160DF1,8,8Maryland,,,HR,1,Behavior,Repeat Incidents,Phone,4,Awesome AP 3,AP_98D7BF59
+student,STU_4D882D31,8,8OhioState,,,HR,1,Behavior,Repeat Incidents,Disruption,2,Awesome AP 3,AP_98D7BF59
+student,STU_05133844,8,8PennSt,,,HR,1,Behavior,Repeat Incidents,Conflict,3,Awesome AP 3,AP_98D7BF59
