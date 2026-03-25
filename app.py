@@ -89,6 +89,12 @@ with st.sidebar:
 # Page header
 # ---------------------------------------------------------------------------
 st.markdown(
+    '<div style="font-family:Barlow Condensed,sans-serif;font-size:52px;'
+    'font-weight:700;color:#F9A21A;letter-spacing:0.02em;line-height:1;'
+    'margin-bottom:4px;">Demo Mock Up</div>',
+    unsafe_allow_html=True,
+)
+st.markdown(
     f'<div style="font-size:13px;color:#8A8FA2;margin-bottom:20px;">'
     f'Viewing as <strong style="color:#001E62">{selected_ap_name}</strong></div>',
     unsafe_allow_html=True,

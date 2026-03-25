@@ -25,7 +25,7 @@ COLORS = {
     "g2":      "#EDEEF2",  # card borders / dividers
     "g4":      "#8A8FA2",  # secondary text / sub-labels
     "g5":      "#3D4259",  # primary body text
-    "row_alt": "#DAEeF6",  # alternating row tint (from mockup)
+    "row_alt": "#EAEAEA",  # alternating row tint (light grey)
     "green":   "#1A9E5B",
     "red":     "#D63B3B",
 }
@@ -85,6 +85,9 @@ def inject_global_css() -> None:
         background: #FFFFFF;
         padding-top: 1.25rem;
         padding-bottom: 3rem;
+        max-width: 1100px !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
     }
 
     h1, h2, h3 {
@@ -192,7 +195,7 @@ def inject_global_css() -> None:
         background: #FFFFFF;
     }
     table.hotlist tr:nth-child(even) td {
-        background: #DAEeF6;
+        background: #EAEAEA;
     }
     table.hotlist td.mono {
         font-family: 'JetBrains Mono', monospace;
